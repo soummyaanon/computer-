@@ -1,5 +1,5 @@
-/** Lower resolution reduces screenshot token count (~4x fewer tokens at 640x480 vs 1024x768) */
-export const resolution = { x: 640, y: 480 }
+/** Sandbox desktop resolution. Bigger = more readable + fewer agent misclicks, but more tokens per screenshot. */
+export const resolution = { x: 1280, y: 800 }
 
 export type DesktopActionInput = {
   action:
