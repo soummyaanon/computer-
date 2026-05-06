@@ -24,9 +24,10 @@ export const getDesktop = async (id?: string) => {
     );
 
     if (id) {
-      const connected = await Sandbox.connect(id, { timeoutMs });
+      const connected = await Sandbox.connect(id);
       const isRunning = await connected.isRunning();
       if (isRunning) {
+        await connected.setTimeout(timeoutMs);
         // await connected.stream.start();
         return connected;
       }
