@@ -91,6 +91,40 @@ export function computerTool(sandboxId: string) {
   });
 }
 
+export function downloadTool(sandboxId: string) {
+  return tool({
+    description:
+      "Expose one or more files from the sandbox to the user as downloadable links in the chat. " +
+      "Use this after saving a file inside the sandbox (e.g. a PDF downloaded from a portal). " +
+      "Pass absolute sandbox paths. Common locations: /root/Downloads, /home/user/Downloads, /tmp.",
+    parameters: zodSchema(z.object({
+      paths: z
+        .array(z.string())
+        .min(1)
+        .describe("Absolute file paths inside the sandbox to expose for download."),
+    })),
+    execute: async ({ paths }) => {
+      const files: Array<{ name: string; path: string; url: string; size: number | null; error?: string }> = [];
+      for (const p of paths) {
+        const stat = await runBash(
+          sandboxId,
+          `stat -c '%s' ${JSON.stringify(p)} 2>/dev/null || echo MISSING`,
+        );
+        const out = (stat.stdout ?? "").trim();
+        const name = p.split("/").pop() || p;
+        if (out === "MISSING" || out === "") {
+          files.push({ name, path: p, url: "", size: null, error: "File not found in sandbox" });
+          continue;
+        }
+        const size = Number(out);
+        const url = `/api/sandbox-file?sandboxId=${encodeURIComponent(sandboxId)}&path=${encodeURIComponent(p)}`;
+        files.push({ name, path: p, url, size: Number.isFinite(size) ? size : null });
+      }
+      return { type: "downloads", files };
+    },
+  });
+}
+
 export function bashTool(sandboxId: string) {
   return tool({
     description:

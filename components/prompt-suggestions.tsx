@@ -1,18 +1,27 @@
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
 
+const SIMONMED_CREDENTIALS = `Try these SimonMed credentials in order until one works (stop on first success):
+  1. URL https://images.simonmed.com/Portal/app  | username Sdara  | password Cardio@2025
+  2. URL https://images.simonmed.com/Portal/app  | username sdara  | password Cardio2026@
+  3. URL https://www.simonmed.com/login/authenticate/  | username sdara  | password Simon9123
+If a login fails (wrong password, error message, or you stay on the login page), go back, clear the fields, and try the next row. Don't give up until all three have been tried.`;
+
 const suggestions = [
   {
-    text: "Summarize today's top Hacker News story",
-    prompt: "Go to news.ycombinator.com and summarize the top story for me",
+    text: "Log in to SimonMed portal",
+    prompt:
+      `${SIMONMED_CREDENTIALS}\n\nOnce logged in, stop at the dashboard and take a screenshot.`,
   },
   {
-    text: "Create a markdown file with a meeting agenda",
-    prompt: "Create a markdown file called meeting-agenda.md with a template for a team meeting agenda",
+    text: "Download my latest patient documents",
+    prompt:
+      `${SIMONMED_CREDENTIALS}\n\nOnce logged in, open the most recent study, download all available documents into /root/Downloads, then call the download tool with each file path so I can grab them.`,
   },
   {
-    text: "What's trending on GitHub this week?",
-    prompt: "Go to github.com/trending and tell me what repositories are trending",
+    text: "List available studies on SimonMed",
+    prompt:
+      `${SIMONMED_CREDENTIALS}\n\nOnce logged in, list all studies/exams visible on the dashboard with their dates.`,
   },
 ];
 

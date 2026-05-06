@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText, UIMessage } from "ai";
 import { killDesktop } from "@/lib/e2b/utils";
-import { bashTool, computerTool } from "@/lib/e2b/tool";
+import { bashTool, computerTool, downloadTool } from "@/lib/e2b/tool";
 import { prunedMessages } from "@/lib/utils";
 
 // Allow streaming responses up to 30 seconds
@@ -22,9 +22,14 @@ export async function POST(req: Request) {
         "Prefer bash when possible. Keep going until the task is done.\n" +
         "Ask follow-up questions only when absolutely necessary to proceed safely.\n" +
         "Be explicit when waiting is required.\n" +
-        "If the browser opens with a setup wizard, YOU MUST IGNORE IT and move straight to the next step (e.g. input the url in the search bar).",
+        "If the browser opens with a setup wizard, YOU MUST IGNORE IT and move straight to the next step (e.g. input the url in the search bar).\n" +
+        "When you save or download a file inside the sandbox that the user should receive (e.g. patient documents, PDFs, images), call the `download` tool with the absolute file path(s) so the user gets clickable links in the chat. Default browser downloads land in /root/Downloads or /home/user/Downloads.",
       messages: prunedMessages(messages),
-      tools: { computer: computerTool(sandboxId), bash: bashTool(sandboxId) },
+      tools: {
+        computer: computerTool(sandboxId),
+        bash: bashTool(sandboxId),
+        download: downloadTool(sandboxId),
+      },
       toolCallStreaming: true,
     });
 
