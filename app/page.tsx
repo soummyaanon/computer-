@@ -41,7 +41,7 @@ export default function Chat() {
     body: {
       sandboxId,
     },
-    maxSteps: 30,
+    maxSteps: 200,
     onError: (error) => {
       console.error(error);
       toast.error("There was an error", {
